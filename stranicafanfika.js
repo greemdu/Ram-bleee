@@ -15,7 +15,6 @@ let currentChapter = 0;
 
 function escapeHtml(str) {
     if (str === undefined || str === null) return '';
-    // Преобразуем в строку, если это не строка
     var string = String(str);
     return string.replace(/[&<>]/g, function(m) {
         if (m === '&') return '&amp;';
@@ -67,7 +66,6 @@ function loadWork() {
     if (currentWork.chapters && currentWork.chapters.length > 0) {
         chapters = currentWork.chapters;
     } else if (currentWork.content) {
-        // Старый формат - одна глава
         var contentText = currentWork.content;
         if (typeof contentText !== 'string') {
             contentText = '';
@@ -365,7 +363,10 @@ function deleteComment(commentId) {
 // ========== НАСТРОЙКА ИНТЕРФЕЙСА ==========
 
 function setupUI() {
-    document.getElementById('likeBtn').addEventListener('click', toggleLike);
+    var likeBtn = document.getElementById('likeBtn');
+    if (likeBtn) {
+        likeBtn.addEventListener('click', toggleLike);
+    }
     
     var prevBtn = document.getElementById('prevChapterBtn');
     var nextBtn = document.getElementById('nextChapterBtn');
@@ -423,5 +424,6 @@ function init() {
     displayWorkInfo();
     renderComments();
     setupUI();
+}
 
 init();
