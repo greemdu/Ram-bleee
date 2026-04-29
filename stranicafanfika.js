@@ -17,7 +17,8 @@ let chapters = [];
 
 function escapeHtml(str) {
     if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
+    var string = String(str);
+    return string.replace(/[&<>]/g, function(m) {
         if (m === '&') return '&amp;';
         if (m === '<') return '&lt;';
         if (m === '>') return '&gt;';
@@ -72,12 +73,14 @@ function loadWork() {
 // ========== ОТОБРАЖЕНИЕ ИНФОРМАЦИИ О РАБОТЕ ==========
 
 function displayWorkInfo() {
-    document.title = `${currentWork.title} — Ram-bleee`;
-    document.getElementById('workTitleBreadcrumb').textContent = currentWork.title;
-    document.getElementById('workTitle').textContent = currentWork.title;
-    document.getElementById('authorName').innerHTML = `👤 ${escapeHtml(currentWork.authorName)}`;
+    if (!currentWork) return;
+    
+    document.title = (currentWork.title || 'Без названия') + ' — Ram-bleee';
+    document.getElementById('workTitleBreadcrumb').textContent = currentWork.title || 'Без названия';
+    document.getElementById('workTitle').textContent = currentWork.title || 'Без названия';
+    document.getElementById('authorName').innerHTML = '👤 ' + escapeHtml(currentWork.authorName || 'Автор');
     document.getElementById('workGenre').textContent = currentWork.genre || 'Без жанра';
-    document.getElementById('workDescription').innerHTML = escapeHtml(currentWork.description).replace(/\n/g, '<br>');
+    document.getElementById('workDescription').innerHTML = escapeHtml(currentWork.description || '').replace(/\n/g, '<br>');
     
     // Статус
     const statusMap = {
