@@ -365,6 +365,7 @@ function deleteComment(commentId) {
 // ========== НАСТРОЙКА ИНТЕРФЕЙСА ==========
 
 function setupUI() {
+    addTranslateButton();
     document.getElementById('likeBtn').addEventListener('click', toggleLike);
     
     var prevBtn = document.getElementById('prevChapterBtn');
