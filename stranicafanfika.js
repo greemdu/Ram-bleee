@@ -425,4 +425,192 @@ function init() {
     setupUI();
 }
 
+// ========== ПЕРЕВОД ЧЕРЕЗ LIBRETRANSLATE ==========
+
+// Состояние перевода
+let isTranslated = false;
+let originalContent = '';
+let currentChapterIndex = 0;
+
+// Функция перевода текста
+async function translateText(text, targetLang) {
+    if (!text || text.trim() === '') return text;
+    
+    // Сопоставление языков (LibreTranslate)
+    const langMap = {
+        'ru': 'ru',
+        'en': 'en',
+        'fr': 'fr',
+        'de': 'de',
+        'es': 'es',
+        'it': 'it',
+        'pt': 'pt',
+        'ja': 'ja',
+        'ko': 'ko',
+        'zh': 'zh',
+        'ar': 'ar'
+    };
+    
+    const toLang = langMap[targetLang] || 'en';
+    
+    try {
+        // Используем публичный демо-сервер LibreTranslate (без ключа)
+        const response = await fetch('https://translate.argosopentech.com/translate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                q: text,
+                source: 'auto',
+                target: toLang,
+                format: 'text'
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Ошибка перевода: ' + response.status);
+        }
+        
+        const data = await response.json();
+        return data.translatedText;
+    } catch (error) {
+        console.error('Ошибка перевода:', error);
+        alert('Не удалось перевести текст. Попробуйте позже.');
+        return text;
+    }
+}
+
+// Функция перевода текущей главы
+async function translateCurrentChapter() {
+    const contentDiv = document.getElementById('workContent');
+    const translateBtn = document.getElementById('translateBtn');
+    
+    if (!contentDiv) return;
+    
+    // Получаем язык из выпадающего списка
+    const langSelect = document.getElementById('translateLangSelect');
+    const targetLang = langSelect ? langSelect.value : 'ru';
+    
+    if (!isTranslated) {
+        // Сохраняем оригинальный текст
+        originalContent = contentDiv.innerHTML;
+        currentChapterIndex = currentChapter;
+        
+        translateBtn.textContent = '🔄 Перевод...';
+        translateBtn.disabled = true;
+        
+        // Получаем чистый текст без HTML-тегов
+        let textToTranslate = '';
+        if (chapters.length > 0 && currentChapter < chapters.length) {
+            textToTranslate = chapters[currentChapter].content || '';
+            if (typeof textToTranslate !== 'string') {
+                textToTranslate = '';
+            }
+        }
+        
+        if (textToTranslate.trim() === '') {
+            alert('Нет текста для перевода');
+            translateBtn.textContent = '🌐 Перевести';
+            translateBtn.disabled = false;
+            return;
+        }
+        
+        // Переводим текст
+        const translatedText = await translateText(textToTranslate, targetLang);
+        
+        // Отображаем переведённый текст
+        contentDiv.innerHTML = '<h3 style="color:#9b62d1; margin-bottom:16px;">' + 
+            escapeHtml(chapters[currentChapter]?.title || 'Глава ' + (currentChapter + 1)) + 
+            '</h3>' + escapeHtml(translatedText).replace(/\n/g, '<br>');
+        
+        translateBtn.textContent = '🌐 Показать оригинал';
+        translateBtn.disabled = false;
+        isTranslated = true;
+        
+        // Добавляем метку о переводе
+        addTranslationNotice(targetLang);
+    } else {
+        // Возвращаем оригинал
+        displayChapter(currentChapterIndex);
+        translateBtn.textContent = '🌐 Перевести';
+        isTranslated = false;
+        removeTranslationNotice();
+    }
+}
+
+function addTranslationNotice(lang) {
+    const langNames = {
+        'ru': 'русский',
+        'en': 'английский',
+        'fr': 'французский',
+        'de': 'немецкий',
+        'es': 'испанский',
+        'it': 'итальянский',
+        'pt': 'португальский',
+        'ja': 'японский',
+        'ko': 'корейский',
+        'zh': 'китайский',
+        'ar': 'арабский'
+    };
+    
+    const notice = document.createElement('div');
+    notice.id = 'translationNotice';
+    notice.style.cssText = 'background:#e8daff; padding:8px 16px; border-radius:20px; font-size:0.75rem; color:#9b62d1; margin-top:16px; text-align:center;';
+    notice.innerHTML = '🌐 Текст переведён на ' + (langNames[lang] || lang) + '. Нажмите "Показать оригинал", чтобы вернуться.';
+    
+    const contentDiv = document.getElementById('workContent');
+    if (contentDiv && !document.getElementById('translationNotice')) {
+        contentDiv.parentNode.insertBefore(notice, contentDiv.nextSibling);
+    }
+}
+
+function removeTranslationNotice() {
+    const notice = document.getElementById('translationNotice');
+    if (notice) notice.remove();
+}
+
+// Функция добавления кнопки перевода на страницу
+function addTranslateButton() {
+    const statsBar = document.querySelector('.work-stats-bar');
+    if (!statsBar) return;
+    
+    // Проверяем, есть ли уже кнопка
+    if (document.getElementById('translateBtn')) return;
+    
+    // Создаём контейнер для кнопки и выбора языка
+    const translateContainer = document.createElement('div');
+    translateContainer.className = 'stat-item';
+    translateContainer.style.gap = '8px';
+    
+    // Выпадающий список для выбора языка
+    const langSelect = document.createElement('select');
+    langSelect.id = 'translateLangSelect';
+    langSelect.style.cssText = 'background:#f3ebff; border:1px solid #e4d3fe; border-radius:40px; padding:6px 12px; font-size:0.8rem; color:#926fd1;';
+    langSelect.innerHTML = `
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="en">🇬🇧 English</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="pt">🇵🇹 Português</option>
+        <option value="ja">🇯🇵 日本語</option>
+        <option value="ko">🇰🇷 한국어</option>
+        <option value="zh">🇨🇳 中文</option>
+    `;
+    
+    // Кнопка перевода
+    const translateBtn = document.createElement('button');
+    translateBtn.id = 'translateBtn';
+    translateBtn.textContent = '🌐 Перевести';
+    translateBtn.className = 'like-button';
+    translateBtn.style.background = 'linear-gradient(135deg, #a07ac9, #8b62b3)';
+    translateBtn.onclick = translateCurrentChapter;
+    
+    translateContainer.appendChild(langSelect);
+    translateContainer.appendChild(translateBtn);
+    statsBar.appendChild(translateContainer);
+}
+
 init();
