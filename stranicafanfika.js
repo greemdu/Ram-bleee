@@ -428,16 +428,24 @@ function init() {
 
 // ========== ПЕРЕВОД ЧЕРЕЗ LIBRETRANSLATE ==========
 
-// Состояние перевода
+// ========== ПЕРЕВОД ЧЕРЕЗ LIBRETRANSLATE ==========
+
 let isTranslated = false;
 let originalContent = '';
 let currentChapterIndex = 0;
 
-// Функция перевода текста
+// Список публичных серверов LibreTranslate (по очереди)
+const translateServers = [
+    'https://translate.argosopentech.com/translate',
+    'https://libretranslate.de/translate',
+    'https://translate.mentality.rip/translate'
+];
+
+// Функция перевода текста с несколькими серверами
 async function translateText(text, targetLang) {
     if (!text || text.trim() === '') return text;
     
-    // Сопоставление языков (LibreTranslate)
+    // Сопоставление языков
     const langMap = {
         'ru': 'ru',
         'en': 'en',
@@ -448,36 +456,85 @@ async function translateText(text, targetLang) {
         'pt': 'pt',
         'ja': 'ja',
         'ko': 'ko',
-        'zh': 'zh',
-        'ar': 'ar'
+        'zh': 'zh'
+    };
+    
+    const toLang = langMap[targetLang] || 'en';
+    
+    // Пробуем каждый сервер по очереди
+    for (let i = 0; i < translateServers.length; i++) {
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 секунд таймаут
+            
+            const response = await fetch(translateServers[i], {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    q: text,
+                    source: 'auto',
+                    target: toLang,
+                    format: 'text'
+                }),
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (response.ok) {
+                const data = await response.json();
+                return data.translatedText;
+            }
+        } catch (error) {
+            console.log('Сервер ' + translateServers[i] + ' не ответил:', error.message);
+            // Пробуем следующий сервер
+        }
+    }
+    
+    // Если все серверы не ответили - используем резервный вариант (MyMemory API)
+    console.log('Все серверы LibreTranslate недоступны, используем MyMemory');
+    return await translateWithMyMemory(text, targetLang);
+}
+
+// Резервный перевод через MyMemory API (без ключа)
+async function translateWithMyMemory(text, targetLang) {
+    const langMap = {
+        'ru': 'ru',
+        'en': 'en',
+        'fr': 'fr',
+        'de': 'de',
+        'es': 'es',
+        'it': 'it',
+        'pt': 'pt',
+        'ja': 'ja',
+        'ko': 'ko',
+        'zh': 'zh'
     };
     
     const toLang = langMap[targetLang] || 'en';
     
     try {
-        // Используем публичный демо-сервер LibreTranslate (без ключа)
-        const response = await fetch('https://translate.argosopentech.com/translate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                q: text,
-                source: 'auto',
-                target: toLang,
-                format: 'text'
-            })
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        
+        const response = await fetch('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text) + '&langpair=auto|' + toLang, {
+            signal: controller.signal
         });
         
-        if (!response.ok) {
-            throw new Error('Ошибка перевода: ' + response.status);
-        }
+        clearTimeout(timeoutId);
         
-        const data = await response.json();
-        return data.translatedText;
+        if (response.ok) {
+            const data = await response.json();
+            // MyMemory возвращает translatedText в responseData
+            if (data && data.responseData && data.responseData.translatedText) {
+                return data.responseData.translatedText;
+            }
+        }
+        throw new Error('MyMemory не ответил');
     } catch (error) {
-        console.error('Ошибка перевода:', error);
-        alert('Не удалось перевести текст. Попробуйте позже.');
+        console.error('Ошибка перевода MyMemory:', error);
         return text;
     }
 }
@@ -489,19 +546,16 @@ async function translateCurrentChapter() {
     
     if (!contentDiv) return;
     
-    // Получаем язык из выпадающего списка
     const langSelect = document.getElementById('translateLangSelect');
     const targetLang = langSelect ? langSelect.value : 'ru';
     
     if (!isTranslated) {
-        // Сохраняем оригинальный текст
         originalContent = contentDiv.innerHTML;
         currentChapterIndex = currentChapter;
         
         translateBtn.textContent = '🔄 Перевод...';
         translateBtn.disabled = true;
         
-        // Получаем чистый текст без HTML-тегов
         let textToTranslate = '';
         if (chapters.length > 0 && currentChapter < chapters.length) {
             textToTranslate = chapters[currentChapter].content || '';
@@ -517,10 +571,12 @@ async function translateCurrentChapter() {
             return;
         }
         
-        // Переводим текст
         const translatedText = await translateText(textToTranslate, targetLang);
         
-        // Отображаем переведённый текст
+        if (translatedText === textToTranslate) {
+            alert('Перевод временно недоступен. Попробуйте позже.');
+        }
+        
         contentDiv.innerHTML = '<h3 style="color:#9b62d1; margin-bottom:16px;">' + 
             escapeHtml(chapters[currentChapter]?.title || 'Глава ' + (currentChapter + 1)) + 
             '</h3>' + escapeHtml(translatedText).replace(/\n/g, '<br>');
@@ -529,10 +585,8 @@ async function translateCurrentChapter() {
         translateBtn.disabled = false;
         isTranslated = true;
         
-        // Добавляем метку о переводе
         addTranslationNotice(targetLang);
     } else {
-        // Возвращаем оригинал
         displayChapter(currentChapterIndex);
         translateBtn.textContent = '🌐 Перевести';
         isTranslated = false;
@@ -551,9 +605,10 @@ function addTranslationNotice(lang) {
         'pt': 'португальский',
         'ja': 'японский',
         'ko': 'корейский',
-        'zh': 'китайский',
-        'ar': 'арабский'
+        'zh': 'китайский'
     };
+    
+    removeTranslationNotice();
     
     const notice = document.createElement('div');
     notice.id = 'translationNotice';
@@ -571,23 +626,18 @@ function removeTranslationNotice() {
     if (notice) notice.remove();
 }
 
-// Функция добавления кнопки перевода на страницу
 function addTranslateButton() {
     const statsBar = document.querySelector('.work-stats-bar');
     if (!statsBar) return;
-    
-    // Проверяем, есть ли уже кнопка
     if (document.getElementById('translateBtn')) return;
     
-    // Создаём контейнер для кнопки и выбора языка
     const translateContainer = document.createElement('div');
     translateContainer.className = 'stat-item';
     translateContainer.style.gap = '8px';
     
-    // Выпадающий список для выбора языка
     const langSelect = document.createElement('select');
     langSelect.id = 'translateLangSelect';
-    langSelect.style.cssText = 'background:#f3ebff; border:1px solid #e4d3fe; border-radius:40px; padding:6px 12px; font-size:0.8rem; color:#926fd1;';
+    langSelect.style.cssText = 'background:#f3ebff; border:1px solid #e4d3fe; border-radius:40px; padding:6px 12px; font-size:0.8rem; color:#926fd1; cursor:pointer;';
     langSelect.innerHTML = `
         <option value="ru">🇷🇺 Русский</option>
         <option value="en">🇬🇧 English</option>
@@ -601,7 +651,6 @@ function addTranslateButton() {
         <option value="zh">🇨🇳 中文</option>
     `;
     
-    // Кнопка перевода
     const translateBtn = document.createElement('button');
     translateBtn.id = 'translateBtn';
     translateBtn.textContent = '🌐 Перевести';
