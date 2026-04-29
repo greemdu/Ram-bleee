@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Мой профиль — Ram-bleee</title>
+    <link rel="stylesheet" href="index-css.css">
+    <link rel="stylesheet" href="модалка-css.css">
+</head>
+<body>
+
+<div class="profile-container">
+    <div class="breadcrumb">
+        <a href="index.html">Главная</a>
+        <span class="separator">→</span>
+        <span>Мой профиль</span>
+    </div>
+
+    <div class="profile-card" id="profileCard">
+        <div class="profile-avatar">
+            <div class="avatar-large">👤</div>
+        </div>
+        <div class="profile-info">
+            <div class="profile-name" id="profileUsername">Загрузка...</div>
+            <div class="profile-email">
+                <span id="profileEmail"></span>
+                <span class="registered-date" id="profileRegistered"></span>
+            </div>
+            <div class="profile-bio" id="profileBio">
+                ✨ Люблю писать фэнтези и романтику. Мечтаю вдохновлять читателей.
+            </div>
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-number" id="worksCount">0</div>
+                    <div class="stat-label">работ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="likesCount">0</div>
+                    <div class="stat-label">лайков</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="commentsCount">0</div>
+                    <div class="stat-label">комментариев</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="works-section">
+        <div class="section-title">
+            📖 Мои истории
+        </div>
+        <div id="userWorksList"></div>
+    </div>
+</div>
+
+<script src="profilejs.js"></script>
+</body>
+</html>

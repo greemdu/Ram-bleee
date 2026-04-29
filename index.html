@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Книга Фанфиков | Главная страница</title>
+    <link rel="stylesheet" href="index-css.css">
+    <link rel="stylesheet" href="модалка-css.css">
+</head>
+<body>
+    <div class="sheep"></div>
+
+    <div class="right-main">
+        <div class="site-header">
+            <div class="logo-area">
+                <div class="logo">
+                    <h1>Ram-bleee</h1>
+                    <span>Книга фанфиков</span>
+                </div>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <div class="search-bar">
+                        <input type="text" placeholder="Поиск историй, авторов...">
+                        <button>🔍 Найти</button>
+                    </div>
+                    <div class="auth-container"></div>
+                </div>
+            </div>
+            <div class="nav-tabs">
+                <a href="#">Топ дня</a>
+                <a href="#">Новинки</a>
+                <a href="#">Лучшее за всё время</a>
+                <a href="#">Подборки редакции</a>
+            </div>
+        </div>
+
+
+        <div class="feed-header">
+            <h2>🌸 Свежие обновления</h2>
+        </div>
+
+        <div class="stories-feed">
+            </div>
+
+        <div class="footer">
+            <span>💜 Ram-bleee --- самое комфортное место для чтения любимых историй 💜</span><br>
+            <span class="footer-copyright">© 2026 Книга Фанфиков | Правила | Помощь | Мы в соцсетях</span>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Добро пожаловать</h3>
+                <button class="close-modal" id="closeModalBtn">✕</button>
+            </div>
+            <div class="modal-tabs">
+                <button class="tab-btn active" data-tab="login">Вход</button>
+                <button class="tab-btn" data-tab="register">Регистрация</button>
+            </div>
+
+            <div id="loginForm" class="modal-form">
+                <div class="form-group">
+                    <label>Email или логин</label>
+                    <input type="text" id="loginEmail" placeholder="example@mail.com">
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••">
+                </div>
+                <button class="submit-btn" id="submitLoginBtn">Продолжить</button>
+                <div class="form-footer">
+                    <a href="#" id="switchToRegister" style="color:#b07ad9;">Зарегистрироваться</a>
+                </div>
+            </div>
+
+            <div id="registerForm" class="modal-form hidden-form">
+                <div class="form-group">
+                    <label>Имя пользователя</label>
+                    <input type="text" id="regUsername" placeholder="Как вас называть?">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="regEmail" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="regPassword" placeholder="минимум 6 символов">
+                </div>
+                <button class="submit-btn" id="submitRegisterBtn">Создать аккаунт</button>
+                <div class="form-footer">
+                    <a href="#" id="switchToLogin" style="color:#b07ad9;">Войти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+</body>
+</html>

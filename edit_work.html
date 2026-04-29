@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Редактирование работы — Ram-bleee</title>
+    <link rel="stylesheet" href="index-css.css">
+    <link rel="stylesheet" href="editor.css">
+    <style>
+        /* Дополнительные стили для глав */
+        .chapters-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e8d9ff;
+        }
+        .chapters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .chapters-header h3 {
+            color: #5a3c74;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        .add-chapter-btn {
+            background: linear-gradient(135deg, #a07ac9, #8b62b3);
+            border: none;
+            border-radius: 40px;
+            padding: 8px 20px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .add-chapter-btn:hover {
+            transform: translateY(-2px);
+        }
+        .chapters-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .chapter-item {
+            background: #faf5ff;
+            border-radius: 20px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .chapter-item:hover {
+            background: #f0e6ff;
+            transform: translateX(5px);
+        }
+        .chapter-info {
+            flex: 1;
+        }
+        .chapter-title {
+            font-weight: 600;
+            color: #5a3c74;
+            margin-bottom: 4px;
+        }
+        .chapter-preview {
+            font-size: 0.75rem;
+            color: #b28be0;
+        }
+        .chapter-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .chapter-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 6px 10px;
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+        .edit-chapter-btn {
+            color: #9b62d1;
+        }
+        .edit-chapter-btn:hover {
+            background: #ede0ff;
+        }
+        .delete-chapter-btn {
+            color: #e085b0;
+        }
+        .delete-chapter-btn:hover {
+            background: #fff0f5;
+        }
+        .empty-chapters {
+            text-align: center;
+            padding: 30px;
+            color: #b28be0;
+            background: #faf5ff;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="breadcrumb-container">
+    <nav class="breadcrumb">
+        <a href="index.html">Главная</a>
+        <span class="separator">→</span>
+        <a href="profile.html">Мой профиль</a>
+        <span class="separator">→</span>
+        <span class="current-page">Редактирование работы</span>
+    </nav>
+</div>
+
+<div class="editor-container">
+    <div class="editor-header">
+        <a href="profile.html" class="back-link">← Назад в профиль</a>
+        <h1>✏️ Редактирование истории</h1>
+        <div class="editor-auth-status" id="editorAuthStatus"></div>
+    </div>
+
+    <div class="editor-card">
+        <form id="editForm">
+            <div class="form-group">
+                <label for="workTitle">Название работы <span class="required">*</span></label>
+                <input type="text" id="workTitle" placeholder="Например: Тайна старого особняка" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="workGenre">Жанр <span class="required">*</span></label>
+                    <input type="text" id="workGenre" placeholder="Фэнтези, романтика, драма...">
+                </div>
+                <div class="form-group half">
+                    <label for="workStatus">Статус</label>
+                    <select id="workStatus">
+                        <option value="in-progress">🔄 В процессе</option>
+                        <option value="completed">✅ Завершено</option>
+                        <option value="frozen">❄️ Заморожено</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="workTags">Теги (через запятую)</label>
+                <input type="text" id="workTags" placeholder="любовь, магия, приключения, юмор">
+            </div>
+
+            <div class="form-group">
+                <label for="workDescription">Описание / Аннотация <span class="required">*</span></label>
+                <textarea id="workDescription" rows="5" placeholder="О чём ваша история? Кратко опишите сюжет..." required></textarea>
+                <span class="char-counter" id="descCounter">0 / 500</span>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" id="cancelBtn" class="btn-secondary">Отмена</button>
+                <button type="submit" id="saveBtn" class="btn-primary">💾 Сохранить изменения</button>
+            </div>
+        </form>
+
+        <!-- БЛОК УПРАВЛЕНИЯ ГЛАВАМИ (ПОСЛЕ ФОРМЫ) -->
+        <div class="chapters-section">
+            <div class="chapters-header">
+                <h3>📚 Список глав</h3>
+                <button type="button" id="addChapterBtn" class="add-chapter-btn">+ Добавить главу</button>
+            </div>
+            <div id="chaptersList" class="chapters-list">
+                <!-- Список глав загрузится сюда -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="auth.js"></script>
+<script src="edit_work.js"></script>
+</body>
+</html>

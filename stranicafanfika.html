@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Чтение фанфика — Ram-bleee</title>
+    <link rel="stylesheet" href="index-css.css">
+    <link rel="stylesheet" href="stranicafanfika.css">
+</head>
+<body>
+
+<div class="fanfik-container">
+    <!-- Хлебные крошки -->
+    <div class="breadcrumb">
+        <a href="index.html">Главная</a>
+        <span class="separator">→</span>
+        <a href="#" id="authorLink">Автор</a>
+        <span class="separator">→</span>
+        <span id="workTitleBreadcrumb">Загрузка...</span>
+    </div>
+
+    <!-- Основная карточка фанфика -->
+    <div class="fanfik-card">
+        <div class="fanfik-header">
+            <div class="work-emoji" id="workEmoji">📖</div>
+            <div class="work-header-info">
+                <h1 id="workTitle">Загрузка...</h1>
+                <div class="work-meta-line">
+                    <span class="author-name" id="authorName"></span>
+                    <span class="work-genre" id="workGenre"></span>
+                    <span class="work-status" id="workStatus"></span>
+                    <span class="work-date" id="workDate"></span>
+                </div>
+                <div class="work-tags" id="workTags"></div>
+            </div>
+        </div>
+
+        <div class="work-stats-bar">
+            <div class="stat-item">
+                <span class="stat-icon">❤️</span>
+                <span class="stat-value" id="likesCount">0</span>
+                <span class="stat-label">лайков</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">💬</span>
+                <span class="stat-value" id="commentsCount">0</span>
+                <span class="stat-label">комментариев</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">📖</span>
+                <span class="stat-value" id="chaptersCount">1</span>
+                <span class="stat-label">глава</span>
+            </div>
+            <div class="stat-item">
+                <button id="likeBtn" class="like-button">❤️ Лайкнуть</button>
+            </div>
+        </div>
+
+        <div class="work-description" id="workDescription">
+            Загрузка описания...
+        </div>
+
+        <div class="work-content" id="workContent">
+            Загрузка содержания...
+        </div>
+
+        <!-- Навигация по главам (если будет несколько глав) -->
+        <div class="chapter-navigation" id="chapterNav" style="display: none;">
+            <button id="prevChapterBtn" class="nav-chapter-btn">← Предыдущая глава</button>
+            <span id="chapterIndicator">Глава 1</span>
+            <button id="nextChapterBtn" class="nav-chapter-btn">Следующая глава →</button>
+        </div>
+    </div>
+
+    <!-- Блок комментариев -->
+    <div class="comments-section">
+        <div class="comments-header">
+            <h3>💬 Комментарии (<span id="commentsCountHeader">0</span>)</h3>
+            <div class="comments-login-prompt" id="commentsLoginPrompt" style="display: none;">
+                <p>Чтобы оставить комментарий, <a href="#" id="loginFromCommentsBtn">войдите</a> в аккаунт</p>
+            </div>
+        </div>
+        <div id="commentsList" class="comments-list">
+            <!-- Комментарии загрузятся сюда -->
+        </div>
+        <div class="add-comment-form" id="addCommentForm" style="display: none;">
+            <textarea id="newCommentText" rows="3" placeholder="Написать комментарий..."></textarea>
+            <button id="submitCommentBtn" class="submit-comment-btn">💬 Отправить</button>
+        </div>
+    </div>
+</div>
+
+<script src="stranicafanfika.js"></script>
+</body>
+</html>

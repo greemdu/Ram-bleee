@@ -1,0 +1,198 @@
+/* Кнопка входа */
+.btn-login {
+    background: linear-gradient(135deg, #c59bf0, #b07ad9);
+    border: none;
+    border-radius: 40px;
+    padding: 8px 24px;
+    cursor: pointer;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: 0.2s;
+    box-shadow: 0 2px 8px rgba(160, 120, 200, 0.3);
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #d2acf5, #c28be8);
+}
+
+/* Затемнённый фон */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(46, 36, 54, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Модальное окно */
+.modal {
+    background: linear-gradient(145deg, #fff8ff, #faf3ff);
+    border-radius: 48px;
+    width: 90%;
+    max-width: 460px;
+    box-shadow: 0 30px 50px rgba(80, 50, 100, 0.3);
+    border: 1px solid #e2cefb;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+}
+
+.modal-overlay.active .modal {
+    transform: scale(1);
+}
+
+/* Шапка модалки */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 28px 12px 28px;
+    border-bottom: 1px solid #eddfff;
+}
+
+.modal-header h3 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    background: linear-gradient(125deg, #9f7bc9, #b388eb);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.close-modal {
+    background: #f0e6ff;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #9b75c7;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+.close-modal:hover {
+    background: #e3d2fc;
+    transform: none;
+}
+
+/* Вкладки */
+.modal-tabs {
+    display: flex;
+    padding: 0 28px;
+    gap: 24px;
+    margin-top: 16px;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ae8acf;
+    cursor: pointer;
+    padding: 8px 0;
+    transition: 0.2s;
+    border-bottom: 2px solid transparent;
+}
+
+.tab-btn.active {
+    color: #9b62d1;
+    border-bottom: 2px solid #c69cf0;
+}
+
+/* Формы */
+.modal-form {
+    padding: 24px 28px 32px 28px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #6e4f89;
+    font-size: 0.85rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid #e5d5fe;
+    border-radius: 28px;
+    font-size: 0.95rem;
+    background: white;
+    outline: none;
+    transition: 0.2s;
+}
+
+.form-group input:focus {
+    border-color: #c69cf0;
+    box-shadow: 0 0 0 3px rgba(180, 130, 220, 0.2);
+}
+
+.submit-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #c59bf0, #b07ad9);
+    border: none;
+    border-radius: 40px;
+    padding: 14px;
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: 12px;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(135deg, #d2acf5, #c28be8);
+    transform: translateY(-2px);
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.75rem;
+    color: #9b83ae;
+}
+
+.hidden-form {
+    display: none;
+}
+
+/* адаптив */
+@media (max-width: 560px) {
+    .modal {
+        width: 92%;
+        border-radius: 32px;
+    }
+    .modal-header h3 {
+        font-size: 1.3rem;
+    }
+    .modal-form {
+        padding: 20px;
+    }
+}
